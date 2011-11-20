@@ -7,6 +7,8 @@ Intelligently validate email addresses.
 
 ## Usage
 
+	EmailCorrect *emailCorrector = [[[EmailCorrect alloc] init] autorelease];
+
 	// Validate an email address, offer a suggestion if the domain is invalid
     EmailCorrectionHandler correctionHandler = ^(NSString *triedEmail, NSString *correction, NSString *email) {
 		UIAlertView *alert = [[[UIAlertView alloc] init] autorelease];
@@ -25,7 +27,7 @@ Intelligently validate email addresses.
 	};
 	NSString *needsCorrection = @"john@domain.con";
 	// Shows an alert view suggesting the domain be changed to '.com'
-    [[EmailCorrect sharedInstance] validateEmailAddress:needsCorrection
+    [emailCorrector validateEmailAddress:needsCorrection
                                            validHandler:validHandler
                                          invalidHandler:invalidHandler
                                       correctionHandler:correctionHandler];
@@ -34,13 +36,13 @@ Intelligently validate email addresses.
 ### Other utilities
 
 	// Check if an email is valid
-	[[EmailCorrect sharedInstance] isValidEmail:@"john@domain.com"];
+	[emailCorrector isValidEmail:@"john@domain.com"];
 
 	// Check if a domain is valid
-	[[EmailCorrect sharedInstance] isValidDomain:@".com"];
+	[emailCorrector isValidDomain:@".com"];
 
 	// Offer a suggestion for an invalid domain
-	NSString *suggestion = [[EmailCorrect sharedInstance] correctionForDomain:@".con"];
+	NSString *suggestion = [emailCorrector correctionForDomain:@".con"];
 	NSLog(@"You typed '.con' did you mean '%@'?", suggestion);
 	// Prints
 	You typed '.con' did you mean '.com'?
