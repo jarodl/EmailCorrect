@@ -14,15 +14,21 @@
 - (void)setUp
 {
     [super setUp];
-    
-    // Set-up code here.
 }
 
 - (void)tearDown
 {
-    // Tear-down code here.
-    
     [super tearDown];
+}
+
+- (void)testIsValidEmail
+{
+    STAssertTrue([[EmailCorrect sharedInstance] isValidEmail:@"niceandsimple@example.com"], @"Valid email was marked as invalid");
+    STAssertTrue([[EmailCorrect sharedInstance] isValidEmail:@"a.little.unusual@example.com"], @"Valid email was marked as invalid");
+    STAssertTrue([[EmailCorrect sharedInstance] isValidEmail:@"a.little.more.unusual@dept.example.com"], @"Valid email was marked as invalid");
+    STAssertFalse([[EmailCorrect sharedInstance] isValidEmail:@"Abc.example.com"], @"Invalid email was marked as valid");
+    STAssertFalse([[EmailCorrect sharedInstance] isValidEmail:@"A@b@c@example.com"], @"Invalid email was marked as valid");
+    STAssertFalse([[EmailCorrect sharedInstance] isValidEmail:@"'(),:;<>[\\]@example.com"], @"Invalid email was marked as valid");
 }
 
 - (void)testIsValidDomain

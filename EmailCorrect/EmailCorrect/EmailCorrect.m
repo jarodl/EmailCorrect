@@ -126,7 +126,9 @@ static EmailCorrect *sharedInstance = nil;
 
 - (BOOL)isValidEmail:(NSString *)emailAddress;
 {
-    return YES;
+    NSString *regex = @"[A-Z0-9a-z][A-Z0-9a-z._%+-]*@[A-Za-z0-9][A-Za-z0-9.-]*\\.[A-Za-z]{2,6}"; 
+    NSPredicate *test = [NSPredicate predicateWithFormat:@"SELF MATCHES %@", regex]; 
+    return [test evaluateWithObject:emailAddress];
 }
 
 - (BOOL)isValidDomain:(NSString *)topLevelDomain
@@ -179,6 +181,21 @@ static EmailCorrect *sharedInstance = nil;
     }
     
     return distances[[firstDomain length]][[secondDomain length]];
+}
+
+- (void)validateEmailAddress:(NSString *)emailAddress
+              successHandler:(EmailSuccessHandler)successHandler
+                 failHandler:(EmailFailureHandler)failHandler
+           correctionHandler:(EmailCorrectionHandler)correctionHandler
+{
+    if ([self isValidEmail:emailAddress])
+    {
+        successHandler();
+    }
+    else
+    {
+        failHandler();
+    }
 }
 
 #pragma mark -
