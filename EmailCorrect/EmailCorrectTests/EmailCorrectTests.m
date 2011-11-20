@@ -9,6 +9,11 @@
 #import "EmailCorrectTests.h"
 #import "EmailCorrect.h"
 
+// via http://mrox.net/blog/2011/08/04/a-tip-for-testing-block-based-apis/
+#define TEST_WAIT_UNTIL_TRUE_SLEEP_SECONDS (0.25)
+#define TEST_WAIT_UNTIL_TRUE(expr) \
+while( (expr) == NO ) [[NSRunLoop currentRunLoop] runUntilDate:[NSDate dateWithTimeIntervalSinceNow:TEST_WAIT_UNTIL_TRUE_SLEEP_SECONDS]];
+
 @implementation EmailCorrectTests
 
 - (void)setUp
@@ -57,6 +62,14 @@
     STAssertNil(correction, @"Correction for valid domain was not nil");
 }
 
+- (void)testGetTopLevelDomain
+{
+    NSString *topLevelDomain = [[EmailCorrect sharedInstance] topLevelDomainFor:@"john@example.com"];
+    STAssertTrue([topLevelDomain isEqualToString:@".com"], @"Incorrect top level domain for john@example.com");
+    topLevelDomain = [[EmailCorrect sharedInstance] topLevelDomainFor:@"john@example.co.uk"];
+    STAssertTrue([topLevelDomain isEqualToString:@".co.uk"], @"Incorrect top level domain for john@example.co.uk");
+}
+
 - (void)testCorrectionForInvalidDomain
 {
     NSString *correction = [[EmailCorrect sharedInstance] correctionForDomain:@".con"];
@@ -65,6 +78,83 @@
     STAssertTrue([correction isEqualToString:@".aero"], @"Correction for '.bero' was not '.aero'");
     correction = [[EmailCorrect sharedInstance] correctionForDomain:@".bad"];
     STAssertTrue([correction isEqualToString:@".ba"], @"Correction for '.bad' was not '.ba'");
+}
+
+- (void)testRunsCorrectionHandler
+{
+    __block BOOL done = NO;
+    
+    NSString *needsCorrection = @"john@domain.con";
+    
+    EmailCorrectionHandler correctionHandler = ^(NSString *triedEmail, NSString *correction, NSString *corrected) {
+        STAssertTrue([triedEmail isEqualToString:needsCorrection], @"Did not return correct email");
+        STAssertTrue([correction isEqualToString:@".com"], @"Did not receive a valid correction");
+        STAssertTrue([corrected isEqualToString:@"john@domain.com"], @"Did not correct email properly");
+        done = YES;
+    };
+    
+    [[EmailCorrect sharedInstance] validateEmailAddress:needsCorrection
+                                           validHandler:^(NSString *email){
+                                               STAssertTrue(FALSE, @"Wrong handler");
+                                               done = YES;
+                                           }
+                                         invalidHandler:^(NSString *email){
+                                             STAssertTrue(FALSE, @"Wrong handler");
+                                             done = YES;
+                                         }
+                                      correctionHandler:correctionHandler];
+    
+    TEST_WAIT_UNTIL_TRUE(done);
+}
+
+- (void)testRunsValidHandler
+{
+    __block BOOL done = NO;
+    
+    NSString *validEmail = @"john@domain.com";
+    
+    EmailCorrectionHandler correctionHandler = ^(NSString *triedEmail, NSString *correction, NSString *corrected) {
+        STAssertTrue(FALSE, @"Wrong handler");
+        done = YES;
+    };
+    
+    [[EmailCorrect sharedInstance] validateEmailAddress:validEmail
+                                           validHandler:^(NSString *email){
+                                               STAssertTrue([validEmail isEqualToString:email], @"Email did not match");
+                                               done = YES;
+                                           }
+                                         invalidHandler:^(NSString *email){
+                                             STAssertTrue(FALSE, @"Wrong handler");
+                                             done = YES;
+                                         }
+                                      correctionHandler:correctionHandler];
+    
+    TEST_WAIT_UNTIL_TRUE(done);
+}
+
+- (void)testRunsInvalidHandler
+{
+    __block BOOL done = NO;
+    
+    NSString *invalidEmail = @"johndomain";
+    
+    EmailCorrectionHandler correctionHandler = ^(NSString *triedEmail, NSString *correction, NSString *corrected) {
+        STAssertTrue(FALSE, @"Wrong handler");
+        done = YES;
+    };
+    
+    [[EmailCorrect sharedInstance] validateEmailAddress:invalidEmail
+                                           validHandler:^(NSString *email){
+                                               STAssertTrue(FALSE, @"Wrong handler");
+                                               done = YES;
+                                           }
+                                         invalidHandler:^(NSString *email){
+                                             STAssertTrue([invalidEmail isEqualToString:email], @"Email did not match");
+                                             done = YES;
+                                         }
+                                      correctionHandler:correctionHandler];
+    
+    TEST_WAIT_UNTIL_TRUE(done);
 }
 
 @end

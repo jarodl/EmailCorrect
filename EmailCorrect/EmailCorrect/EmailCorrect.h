@@ -8,9 +8,9 @@
 
 #import <Foundation/Foundation.h>
 
-typedef void (^EmailCorrectionHandler)(BOOL valid, NSString* correction);
-typedef void (^EmailSuccessHandler)();
-typedef void (^EmailFailureHandler)();
+typedef void (^EmailCorrectionHandler)(NSString *triedEmail, NSString* domainCorrection, NSString *correctedEmail);
+typedef void (^EmailValidHandler)(NSString *email);
+typedef void (^EmailInvalidHandler)(NSString *email);
 
 @interface EmailCorrect : NSObject
 
@@ -18,10 +18,11 @@ typedef void (^EmailFailureHandler)();
 - (BOOL)isValidEmail:(NSString *)emailAddress;
 - (BOOL)isValidDomain:(NSString *)topLevelDomain;
 - (NSString *)correctionForDomain:(NSString *)invalidDomain;
+- (NSString *)topLevelDomainFor:(NSString *)email;
 - (int)similarityBetween:(NSString *)firstDomain and:(NSString *)secondDomain;
 - (void)validateEmailAddress:(NSString *)emailAddress
-              successHandler:(EmailSuccessHandler)successHandler
-                 failHandler:(EmailFailureHandler)failHandler
+                validHandler:(EmailValidHandler)validHandler
+              invalidHandler:(EmailInvalidHandler)invalidHandler
            correctionHandler:(EmailCorrectionHandler)correctionHandler;
 
 @end

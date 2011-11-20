@@ -126,7 +126,14 @@ static EmailCorrect *sharedInstance = nil;
 
 - (BOOL)isValidEmail:(NSString *)emailAddress;
 {
-    NSString *regex = @"[A-Z0-9a-z][A-Z0-9a-z._%+-]*@[A-Za-z0-9][A-Za-z0-9.-]*\\.[A-Za-z]{2,6}"; 
+    NSString *regex =
+    @"(?:[a-z0-9!#$%\\&'*+/=?\\^_`{|}~-]+(?:\\.[a-z0-9!#$%\\&'*+/=?\\^_`{|}"
+    @"~-]+)*|\"(?:[\\x01-\\x08\\x0b\\x0c\\x0e-\\x1f\\x21\\x23-\\x5b\\x5d-\\"
+    @"x7f]|\\\\[\\x01-\\x09\\x0b\\x0c\\x0e-\\x7f])*\")@(?:(?:[a-z0-9](?:[a-"
+    @"z0-9-]*[a-z0-9])?\\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?|\\[(?:(?:25[0-5"
+    @"]|2[0-4][0-9]|[01]?[0-9][0-9]?)\\.){3}(?:25[0-5]|2[0-4][0-9]|[01]?[0-"
+    @"9][0-9]?|[a-z0-9-]*[a-z0-9]:(?:[\\x01-\\x08\\x0b\\x0c\\x0e-\\x1f\\x21"
+    @"-\\x5a\\x53-\\x7f]|\\\\[\\x01-\\x09\\x0b\\x0c\\x0e-\\x7f])+)\\])";
     NSPredicate *test = [NSPredicate predicateWithFormat:@"SELF MATCHES %@", regex]; 
     return [test evaluateWithObject:emailAddress];
 }
@@ -152,6 +159,13 @@ static EmailCorrect *sharedInstance = nil;
         }
     }
     return correction;
+}
+
+- (NSString *)topLevelDomainFor:(NSString *)email
+{
+    NSString *domain = [[email componentsSeparatedByString:@"@"] lastObject];
+    NSString *topLevel = [domain substringFromIndex:[domain rangeOfString:@"."].location];
+    return topLevel;
 }
 
 - (int)similarityBetween:(NSString *)firstDomain and:(NSString *)secondDomain
@@ -184,17 +198,28 @@ static EmailCorrect *sharedInstance = nil;
 }
 
 - (void)validateEmailAddress:(NSString *)emailAddress
-              successHandler:(EmailSuccessHandler)successHandler
-                 failHandler:(EmailFailureHandler)failHandler
+                validHandler:(EmailValidHandler)validHandler
+              invalidHandler:(EmailInvalidHandler)invalidHandler
            correctionHandler:(EmailCorrectionHandler)correctionHandler
 {
     if ([self isValidEmail:emailAddress])
     {
-        successHandler();
+        NSString *domain = [self topLevelDomainFor:emailAddress];
+        if ([self isValidDomain:domain])
+        {
+            validHandler(emailAddress);
+        }
+        else
+        {
+            NSString *correction = [self correctionForDomain:domain];
+            NSString *correctedEmail = [emailAddress stringByReplacingOccurrencesOfString:domain
+                                                                               withString:correction];
+            correctionHandler(emailAddress, correction, correctedEmail);
+        }
     }
     else
     {
-        failHandler();
+        invalidHandler(emailAddress);
     }
 }
 
