@@ -29,6 +29,8 @@ Easily validate email addresses and offer suggestions to users when invalid emai
                                       correctionHandler:correctionHandler];
 
 
+### Other utilities
+
 	// Check if an email is valid
 	[[EmailCorrect sharedInstance] isValidEmail:@"john@domain.com"];
 
