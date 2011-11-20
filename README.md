@@ -1,7 +1,9 @@
 EmailCorrect
 ============
 
-Easily validate email addresses and offer suggestions to users when invalid emails are found.
+![Preview](http://s3.amazonaws.com/jarodlrandom/emailcorrect.png)
+
+Intelligently validate email addresses.
 
 ## Usage
 
