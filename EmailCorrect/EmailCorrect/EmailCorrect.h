@@ -14,7 +14,6 @@ typedef void (^EmailInvalidHandler)(NSString *email);
 
 @interface EmailCorrect : NSObject
 
-+ (id)sharedInstance;
 - (BOOL)isValidEmail:(NSString *)emailAddress;
 - (BOOL)isValidDomain:(NSString *)topLevelDomain;
 // Offers a suggestion for a possibly mis-spelled domain

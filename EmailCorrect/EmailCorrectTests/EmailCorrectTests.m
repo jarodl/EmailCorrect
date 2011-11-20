@@ -16,67 +16,71 @@ while( (expr) == NO ) [[NSRunLoop currentRunLoop] runUntilDate:[NSDate dateWithT
 
 @implementation EmailCorrectTests
 
+@synthesize emailCorrector;
+
 - (void)setUp
 {
     [super setUp];
+    self.emailCorrector = [[EmailCorrect alloc] init];
 }
 
 - (void)tearDown
 {
+    self.emailCorrector = nil;
     [super tearDown];
 }
 
 - (void)testIsValidEmail
 {
-    STAssertTrue([[EmailCorrect sharedInstance] isValidEmail:@"niceandsimple@example.com"], @"Valid email was marked as invalid");
-    STAssertTrue([[EmailCorrect sharedInstance] isValidEmail:@"a.little.unusual@example.com"], @"Valid email was marked as invalid");
-    STAssertTrue([[EmailCorrect sharedInstance] isValidEmail:@"a.little.more.unusual@dept.example.com"], @"Valid email was marked as invalid");
-    STAssertFalse([[EmailCorrect sharedInstance] isValidEmail:@"Abc.example.com"], @"Invalid email was marked as valid");
-    STAssertFalse([[EmailCorrect sharedInstance] isValidEmail:@"A@b@c@example.com"], @"Invalid email was marked as valid");
-    STAssertFalse([[EmailCorrect sharedInstance] isValidEmail:@"'(),:;<>[\\]@example.com"], @"Invalid email was marked as valid");
+    STAssertTrue([emailCorrector isValidEmail:@"niceandsimple@example.com"], @"Valid email was marked as invalid");
+    STAssertTrue([emailCorrector isValidEmail:@"a.little.unusual@example.com"], @"Valid email was marked as invalid");
+    STAssertTrue([emailCorrector isValidEmail:@"a.little.more.unusual@dept.example.com"], @"Valid email was marked as invalid");
+    STAssertFalse([emailCorrector isValidEmail:@"Abc.example.com"], @"Invalid email was marked as valid");
+    STAssertFalse([emailCorrector isValidEmail:@"A@b@c@example.com"], @"Invalid email was marked as valid");
+    STAssertFalse([emailCorrector isValidEmail:@"'(),:;<>[\\]@example.com"], @"Invalid email was marked as valid");
 }
 
 - (void)testIsValidDomain
 {
-    STAssertTrue([[EmailCorrect sharedInstance] isValidDomain:@".com"],
+    STAssertTrue([emailCorrector isValidDomain:@".com"],
                  @"Valid top level domain was marked as invalid");
-    STAssertFalse([[EmailCorrect sharedInstance] isValidDomain:@".con"],
+    STAssertFalse([emailCorrector isValidDomain:@".con"],
                   @"Invalid top level domain was marked as valid");
 }
 
 - (void)testSimilarityBetweenDomains
 {
-    int similarity = [[EmailCorrect sharedInstance] similarityBetween:@".com" and:@".con"];
+    int similarity = [emailCorrector similarityBetween:@".com" and:@".con"];
     STAssertEquals(similarity, 1, @"Similarity between '.com' and '.con' was not 1");
-    similarity = [[EmailCorrect sharedInstance] similarityBetween:@".bon" and:@".com"];
+    similarity = [emailCorrector similarityBetween:@".bon" and:@".com"];
     STAssertEquals(similarity, 2, @"Similarity between '.bon' and '.com' was not 2");
-    similarity = [[EmailCorrect sharedInstance] similarityBetween:@"sitting" and:@"kitten"];
+    similarity = [emailCorrector similarityBetween:@"sitting" and:@"kitten"];
     STAssertEquals(similarity, 3, @"Similarity between 'sitting' and 'kitten' was not 3");
-    similarity = [[EmailCorrect sharedInstance] similarityBetween:@"Saturday" and:@"Sunday"];
+    similarity = [emailCorrector similarityBetween:@"Saturday" and:@"Sunday"];
     STAssertEquals(similarity, 3, @"Similarity between 'Saturday' and 'Sunday' was not 3");    
 }
 
 - (void)testSimilarityForValidDomain
 {
-    NSString *correction = [[EmailCorrect sharedInstance] correctionForDomain:@".com"];
+    NSString *correction = [emailCorrector correctionForDomain:@".com"];
     STAssertNil(correction, @"Correction for valid domain was not nil");
 }
 
 - (void)testGetTopLevelDomain
 {
-    NSString *topLevelDomain = [[EmailCorrect sharedInstance] topLevelDomainFor:@"john@example.com"];
+    NSString *topLevelDomain = [emailCorrector topLevelDomainFor:@"john@example.com"];
     STAssertTrue([topLevelDomain isEqualToString:@".com"], @"Incorrect top level domain for john@example.com");
-    topLevelDomain = [[EmailCorrect sharedInstance] topLevelDomainFor:@"john@example.co.uk"];
+    topLevelDomain = [emailCorrector topLevelDomainFor:@"john@example.co.uk"];
     STAssertTrue([topLevelDomain isEqualToString:@".co.uk"], @"Incorrect top level domain for john@example.co.uk");
 }
 
 - (void)testCorrectionForInvalidDomain
 {
-    NSString *correction = [[EmailCorrect sharedInstance] correctionForDomain:@".con"];
+    NSString *correction = [emailCorrector correctionForDomain:@".con"];
     STAssertTrue([correction isEqualToString:@".com"], @"Correction for '.com' was not '.con'");
-    correction = [[EmailCorrect sharedInstance] correctionForDomain:@".bero"];
+    correction = [emailCorrector correctionForDomain:@".bero"];
     STAssertTrue([correction isEqualToString:@".aero"], @"Correction for '.bero' was not '.aero'");
-    correction = [[EmailCorrect sharedInstance] correctionForDomain:@".bad"];
+    correction = [emailCorrector correctionForDomain:@".bad"];
     STAssertTrue([correction isEqualToString:@".ba"], @"Correction for '.bad' was not '.ba'");
 }
 
@@ -93,7 +97,7 @@ while( (expr) == NO ) [[NSRunLoop currentRunLoop] runUntilDate:[NSDate dateWithT
         done = YES;
     };
     
-    [[EmailCorrect sharedInstance] validateEmailAddress:needsCorrection
+    [emailCorrector validateEmailAddress:needsCorrection
                                            validHandler:^(NSString *email){
                                                STAssertTrue(FALSE, @"Wrong handler");
                                                done = YES;
@@ -118,7 +122,7 @@ while( (expr) == NO ) [[NSRunLoop currentRunLoop] runUntilDate:[NSDate dateWithT
         done = YES;
     };
     
-    [[EmailCorrect sharedInstance] validateEmailAddress:validEmail
+    [emailCorrector validateEmailAddress:validEmail
                                            validHandler:^(NSString *email){
                                                STAssertTrue([validEmail isEqualToString:email], @"Email did not match");
                                                done = YES;
@@ -143,7 +147,7 @@ while( (expr) == NO ) [[NSRunLoop currentRunLoop] runUntilDate:[NSDate dateWithT
         done = YES;
     };
     
-    [[EmailCorrect sharedInstance] validateEmailAddress:invalidEmail
+    [emailCorrector validateEmailAddress:invalidEmail
                                            validHandler:^(NSString *email){
                                                STAssertTrue(FALSE, @"Wrong handler");
                                                done = YES;

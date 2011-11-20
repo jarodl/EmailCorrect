@@ -8,8 +8,6 @@
 
 #import "EmailCorrect.h"
 
-static EmailCorrect *sharedInstance = nil;
-
 @interface EmailCorrect ()
 @property (nonatomic, retain) NSSet *topLevelDomains;
 @end
@@ -17,51 +15,6 @@ static EmailCorrect *sharedInstance = nil;
 @implementation EmailCorrect
 
 @synthesize topLevelDomains;
-
-#pragma mark -
-#pragma mark Singleton methods
-
-// Taken from: http://iphone.galloway.me.uk/iphone-sdktutorials/singleton-classes/
-+ (id)sharedInstance
-{
-    @synchronized(self)
-    {
-        if(sharedInstance == nil)
-            sharedInstance = [[super allocWithZone:NULL] init];
-    }
-    
-    return sharedInstance;
-}
-
-+ (id)allocWithZone:(NSZone *)zone
-{
-    return [[self sharedInstance] retain];
-}
-
-- (id)copyWithZone:(NSZone *)zone
-{
-    return self;
-}
-
-- (id)retain
-{
-    return self;
-}
-
-- (unsigned)retainCount
-{
-    return UINT_MAX; //denotes an object that cannot be released
-}
-
-- (oneway void)release
-{
-    // never release
-}
-
-- (id)autorelease
-{
-    return self;
-}
 
 #pragma mark -
 #pragma mark Set up

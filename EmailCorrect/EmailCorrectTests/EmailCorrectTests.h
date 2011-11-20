@@ -8,6 +8,9 @@
 
 #import <SenTestingKit/SenTestingKit.h>
 
+@class EmailCorrect;
 @interface EmailCorrectTests : SenTestCase
+
+@property (nonatomic, retain) EmailCorrect *emailCorrector;
 
 @end
