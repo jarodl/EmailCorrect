@@ -40,9 +40,17 @@ while( (expr) == NO ) [[NSRunLoop currentRunLoop] runUntilDate:[NSDate dateWithT
     STAssertFalse([emailCorrector isValidEmail:@"'(),:;<>[\\]@example.com"], @"Invalid email was marked as valid");
 }
 
+- (void)testUppercaseLettersInEmailRemainValid
+{
+    STAssertTrue([emailCorrector isValidEmail:@"niceandsimple@Example.com"], @"Valid email was marked as invalid");
+    STAssertTrue([emailCorrector isValidEmail:@"A.Little.Unusual@ExaMplE.Com"], @"Valid email was marked as invalid");
+}
+
 - (void)testIsValidDomain
 {
     STAssertTrue([emailCorrector isValidDomain:@".com"],
+                 @"Valid top level domain was marked as invalid");
+    STAssertTrue([emailCorrector isValidDomain:@".COM"],
                  @"Valid top level domain was marked as invalid");
     STAssertFalse([emailCorrector isValidDomain:@".con"],
                   @"Invalid top level domain was marked as valid");
@@ -52,6 +60,8 @@ while( (expr) == NO ) [[NSRunLoop currentRunLoop] runUntilDate:[NSDate dateWithT
 {
     int similarity = [emailCorrector similarityBetween:@".com" and:@".con"];
     STAssertEquals(similarity, 1, @"Similarity between '.com' and '.con' was not 1");
+    similarity = [emailCorrector similarityBetween:@".COM" and:@".com"];
+    STAssertEquals(similarity, 0, @"Similarity between '.COM' and '.com' was not 0");
     similarity = [emailCorrector similarityBetween:@".bon" and:@".com"];
     STAssertEquals(similarity, 2, @"Similarity between '.bon' and '.com' was not 2");
     similarity = [emailCorrector similarityBetween:@"sitting" and:@"kitten"];
@@ -64,6 +74,8 @@ while( (expr) == NO ) [[NSRunLoop currentRunLoop] runUntilDate:[NSDate dateWithT
 {
     NSString *correction = [emailCorrector correctionForDomain:@".com"];
     STAssertNil(correction, @"Correction for valid domain was not nil");
+    correction = [emailCorrector correctionForDomain:@".COM"];
+    STAssertNil(correction, @"Correction for valid domain was not nil");
 }
 
 - (void)testGetTopLevelDomain
@@ -72,6 +84,8 @@ while( (expr) == NO ) [[NSRunLoop currentRunLoop] runUntilDate:[NSDate dateWithT
     STAssertTrue([topLevelDomain isEqualToString:@".com"], @"Incorrect top level domain for john@example.com");
     topLevelDomain = [emailCorrector topLevelDomainFor:@"john@example.co.uk"];
     STAssertTrue([topLevelDomain isEqualToString:@".co.uk"], @"Incorrect top level domain for john@example.co.uk");
+    topLevelDomain = [emailCorrector topLevelDomainFor:@"John@Example.COM"];
+    STAssertTrue([topLevelDomain isEqualToString:@".com"], @"Incorrect top level domain for John@Example.COM");
 }
 
 - (void)testCorrectionForInvalidDomain
@@ -82,6 +96,8 @@ while( (expr) == NO ) [[NSRunLoop currentRunLoop] runUntilDate:[NSDate dateWithT
     STAssertTrue([correction isEqualToString:@".aero"], @"Correction for '.bero' was not '.aero'");
     correction = [emailCorrector correctionForDomain:@".bad"];
     STAssertTrue([correction isEqualToString:@".ba"], @"Correction for '.bad' was not '.ba'");
+    correction = [emailCorrector correctionForDomain:@".COn"];
+    STAssertTrue([correction isEqualToString:@".com"], @"Correction for '.COn' was not '.com'");
 }
 
 - (void)testRunsCorrectionHandler

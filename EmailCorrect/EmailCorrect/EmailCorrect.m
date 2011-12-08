@@ -88,12 +88,12 @@
     @"9][0-9]?|[a-z0-9-]*[a-z0-9]:(?:[\\x01-\\x08\\x0b\\x0c\\x0e-\\x1f\\x21"
     @"-\\x5a\\x53-\\x7f]|\\\\[\\x01-\\x09\\x0b\\x0c\\x0e-\\x7f])+)\\])";
     NSPredicate *test = [NSPredicate predicateWithFormat:@"SELF MATCHES %@", regex]; 
-    return [test evaluateWithObject:emailAddress];
+    return [test evaluateWithObject:[emailAddress lowercaseString]];
 }
 
 - (BOOL)isValidDomain:(NSString *)topLevelDomain
 {
-    return [topLevelDomains containsObject:topLevelDomain];
+    return [topLevelDomains containsObject:[topLevelDomain lowercaseString]];
 }
 
 - (NSString *)correctionForDomain:(NSString *)invalidDomain
@@ -116,13 +116,15 @@
 
 - (NSString *)topLevelDomainFor:(NSString *)email
 {
-    NSString *domain = [[email componentsSeparatedByString:@"@"] lastObject];
+    NSString *domain = [[[email componentsSeparatedByString:@"@"] lastObject] lowercaseString];
     NSString *topLevel = [domain substringFromIndex:[domain rangeOfString:@"."].location];
     return topLevel;
 }
 
 - (int)similarityBetween:(NSString *)firstDomain and:(NSString *)secondDomain
 {
+    firstDomain = [firstDomain lowercaseString];
+    secondDomain = [secondDomain lowercaseString];
     int distances[[firstDomain length] + 1][[secondDomain length] + 1];
     
     for (int i = 0; i < [firstDomain length] + 1; i++)
