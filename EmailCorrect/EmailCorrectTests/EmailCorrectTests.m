@@ -48,21 +48,21 @@ while( (expr) == NO ) [[NSRunLoop currentRunLoop] runUntilDate:[NSDate dateWithT
 
 - (void)testIsValidDomain
 {
-    STAssertTrue([emailCorrector isValidDomain:@".com"],
+    STAssertTrue([emailCorrector isValidDomain:@"com"],
                  @"Valid top level domain was marked as invalid");
-    STAssertTrue([emailCorrector isValidDomain:@".COM"],
+    STAssertTrue([emailCorrector isValidDomain:@"COM"],
                  @"Valid top level domain was marked as invalid");
-    STAssertFalse([emailCorrector isValidDomain:@".con"],
+    STAssertFalse([emailCorrector isValidDomain:@"con"],
                   @"Invalid top level domain was marked as valid");
 }
 
 - (void)testSimilarityBetweenDomains
 {
-    int similarity = [emailCorrector similarityBetween:@".com" and:@".con"];
+    int similarity = [emailCorrector similarityBetween:@"com" and:@"con"];
     STAssertEquals(similarity, 1, @"Similarity between '.com' and '.con' was not 1");
-    similarity = [emailCorrector similarityBetween:@".COM" and:@".com"];
+    similarity = [emailCorrector similarityBetween:@"COM" and:@"com"];
     STAssertEquals(similarity, 0, @"Similarity between '.COM' and '.com' was not 0");
-    similarity = [emailCorrector similarityBetween:@".bon" and:@".com"];
+    similarity = [emailCorrector similarityBetween:@"bon" and:@"com"];
     STAssertEquals(similarity, 2, @"Similarity between '.bon' and '.com' was not 2");
     similarity = [emailCorrector similarityBetween:@"sitting" and:@"kitten"];
     STAssertEquals(similarity, 3, @"Similarity between 'sitting' and 'kitten' was not 3");
@@ -72,32 +72,34 @@ while( (expr) == NO ) [[NSRunLoop currentRunLoop] runUntilDate:[NSDate dateWithT
 
 - (void)testSimilarityForValidDomain
 {
-    NSString *correction = [emailCorrector correctionForDomain:@".com"];
+    NSString *correction = [emailCorrector correctionForDomain:@"com"];
     STAssertNil(correction, @"Correction for valid domain was not nil");
-    correction = [emailCorrector correctionForDomain:@".COM"];
+    correction = [emailCorrector correctionForDomain:@"COM"];
     STAssertNil(correction, @"Correction for valid domain was not nil");
 }
 
 - (void)testGetTopLevelDomain
 {
     NSString *topLevelDomain = [emailCorrector topLevelDomainFor:@"john@example.com"];
-    STAssertTrue([topLevelDomain isEqualToString:@".com"], @"Incorrect top level domain for john@example.com");
+    STAssertTrue([topLevelDomain isEqualToString:@"com"], @"Incorrect top level domain for john@example.com");
     topLevelDomain = [emailCorrector topLevelDomainFor:@"john@example.co.uk"];
-    STAssertTrue([topLevelDomain isEqualToString:@".co.uk"], @"Incorrect top level domain for john@example.co.uk");
+    STAssertTrue([topLevelDomain isEqualToString:@"co.uk"], @"Incorrect top level domain for john@example.co.uk");
     topLevelDomain = [emailCorrector topLevelDomainFor:@"John@Example.COM"];
-    STAssertTrue([topLevelDomain isEqualToString:@".com"], @"Incorrect top level domain for John@Example.COM");
+    STAssertTrue([topLevelDomain isEqualToString:@"com"], @"Incorrect top level domain for John@Example.COM");
+    topLevelDomain = [emailCorrector topLevelDomainFor:@"John@alumni.stanford.com"];
+    STAssertTrue([topLevelDomain isEqualToString:@"com"], @"Incorrect top level domain for John@alumni.stanford.com");
 }
 
 - (void)testCorrectionForInvalidDomain
 {
-    NSString *correction = [emailCorrector correctionForDomain:@".con"];
-    STAssertTrue([correction isEqualToString:@".com"], @"Correction for '.com' was not '.con'");
-    correction = [emailCorrector correctionForDomain:@".bero"];
-    STAssertTrue([correction isEqualToString:@".aero"], @"Correction for '.bero' was not '.aero'");
-    correction = [emailCorrector correctionForDomain:@".bad"];
-    STAssertTrue([correction isEqualToString:@".ba"], @"Correction for '.bad' was not '.ba'");
-    correction = [emailCorrector correctionForDomain:@".COn"];
-    STAssertTrue([correction isEqualToString:@".com"], @"Correction for '.COn' was not '.com'");
+    NSString *correction = [emailCorrector correctionForDomain:@"con"];
+    STAssertTrue([correction isEqualToString:@"com"], @"Correction for '.com' was not '.con'");
+    correction = [emailCorrector correctionForDomain:@"bero"];
+    STAssertTrue([correction isEqualToString:@"aero"], @"Correction for '.bero' was not '.aero'");
+    correction = [emailCorrector correctionForDomain:@"bad"];
+    STAssertTrue([correction isEqualToString:@"ad"], @"Correction for '.bad' was not '.ad'");
+    correction = [emailCorrector correctionForDomain:@"COn"];
+    STAssertTrue([correction isEqualToString:@"com"], @"Correction for '.COn' was not '.com'");
 }
 
 - (void)testRunsCorrectionHandler
@@ -108,7 +110,7 @@ while( (expr) == NO ) [[NSRunLoop currentRunLoop] runUntilDate:[NSDate dateWithT
     
     EmailCorrectionHandler correctionHandler = ^(NSString *triedEmail, NSString *correction, NSString *corrected) {
         STAssertTrue([triedEmail isEqualToString:needsCorrection], @"Did not return correct email");
-        STAssertTrue([correction isEqualToString:@".com"], @"Did not receive a valid correction");
+        STAssertTrue([correction isEqualToString:@"com"], @"Did not receive a valid correction");
         STAssertTrue([corrected isEqualToString:@"john@domain.com"], @"Did not correct email properly");
         done = YES;
     };
