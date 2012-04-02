@@ -1,0 +1,83 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="chrome=1">
+    <title>EmailCorrect by jarodl</title>
+    
+    <link rel="stylesheet" href="stylesheets/styles.css">
+    <link rel="stylesheet" href="stylesheets/pygment_trac.css">
+    <script src="javascripts/scale.fix.js"></script>
+    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
+    <!--[if lt IE 9]>
+    <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+  </head>
+  <body>
+    <div class="wrapper">
+      <header>
+        <h1>EmailCorrect</h1>
+        <p>Intelligently validate email addresses.</p>
+        <p class="view"><a href="https://github.com/jarodl/EmailCorrect">View the Project on GitHub <small>jarodl/EmailCorrect</small></a></p>
+        <ul>
+          <li><a href="https://github.com/jarodl/EmailCorrect/zipball/master">Download <strong>ZIP File</strong></a></li>
+          <li><a href="https://github.com/jarodl/EmailCorrect/tarball/master">Download <strong>TAR Ball</strong></a></li>
+          <li><a href="https://github.com/jarodl/EmailCorrect">Fork On <strong>GitHub</strong></a></li>
+        </ul>
+      </header>
+      <section>
+        <p><img src="http://s3.amazonaws.com/jarodlrandom/emailcorrect.png" alt="Preview"></p>
+
+<p>Intelligently validate email addresses.</p>
+
+<h2>Usage</h2>
+
+<pre><code>EmailCorrect *emailCorrector = [[[EmailCorrect alloc] init] autorelease];
+
+// Validate an email address, offer a suggestion if the domain is invalid
+EmailCorrectionHandler correctionHandler = ^(NSString *triedEmail, NSString *correction, NSString *email) {
+    UIAlertView *alert = [[[UIAlertView alloc] init] autorelease];
+    [alert setTitle:[NSString stringWithFormat:@"Did you mean %@?", correction]];
+    NSString *message = [NSString stringWithFormat:@"Tried to use the invalid email %@, did you mean %@?", triedEmail, email];
+    [alert setMessage:message];
+    [alert addButtonWithTitle:@"Yes"];
+    [alert addButtonWithTitle:@"No"];
+    [alert show];
+};
+EmailValidHandler validHandler = ^(NSString *email) {
+    NSLog([NSString stringWithFormat:@"Success! Email address '%@' is valid", email);
+};
+EmailInvalidHandler invalidHandler = ^(NSString *invalidEmail) {
+    NSLog([NSString stringWithFormat:@"Failed! Email address '%@' is invalid", invalidEmail);
+};
+NSString *needsCorrection = @"john@domain.con";
+// Shows an alert view suggesting the domain be changed to '.com'
+[emailCorrector validateEmailAddress:needsCorrection
+                                       validHandler:validHandler
+                                     invalidHandler:invalidHandler
+                                  correctionHandler:correctionHandler];
+</code></pre>
+
+<h3>Other utilities</h3>
+
+<pre><code>// Check if an email is valid
+[emailCorrector isValidEmail:@"john@domain.com"];
+
+// Check if a domain is valid
+[emailCorrector isValidDomain:@".com"];
+
+// Offer a suggestion for an invalid domain
+NSString *suggestion = [emailCorrector correctionForDomain:@".con"];
+NSLog(@"You typed '.con' did you mean '%@'?", suggestion);
+// Prints
+You typed '.con' did you mean '.com'?
+</code></pre>
+      </section>
+      <footer>
+        <p>This project is maintained by <a href="https://github.com/jarodl">jarodl</a></p>
+        <p><small>Hosted on GitHub Pages &mdash; Theme by <a href="https://github.com/orderedlist">orderedlist</a></small></p>
+      </footer>
+    </div>
+    <!--[if !IE]><script>fixScale(document);</script><!--<![endif]-->
+  </body>
+</html>
