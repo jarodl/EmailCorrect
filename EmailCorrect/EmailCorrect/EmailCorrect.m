@@ -136,6 +136,7 @@
     firstDomain = [firstDomain lowercaseString];
     secondDomain = [secondDomain lowercaseString];
     int distances[[firstDomain length] + 1][[secondDomain length] + 1];
+    memset(distances, 0, sizeof(distances));
     
     for (int i = 0; i < [firstDomain length] + 1; i++)
         distances[i][0] = i;
