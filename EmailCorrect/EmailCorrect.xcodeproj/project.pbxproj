@@ -17,6 +17,7 @@
 		7A10E5D11478AB8F0082341A /* EmailCorrect.h in Headers */ = {isa = PBXBuildFile; fileRef = 7A10E5CF1478AB8F0082341A /* EmailCorrect.h */; };
 		7A10E5D21478AB8F0082341A /* EmailCorrect.m in Sources */ = {isa = PBXBuildFile; fileRef = 7A10E5D01478AB8F0082341A /* EmailCorrect.m */; };
 		7A10E5D31478AB8F0082341A /* EmailCorrect.m in Sources */ = {isa = PBXBuildFile; fileRef = 7A10E5D01478AB8F0082341A /* EmailCorrect.m */; };
+		7AB23B8015D33E96007E3A65 /* EmailCorrect+Private.h in Headers */ = {isa = PBXBuildFile; fileRef = 7AB23B7F15D33E96007E3A65 /* EmailCorrect+Private.h */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -44,6 +45,7 @@
 		7A10E5C51478AB6D0082341A /* EmailCorrectTests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = EmailCorrectTests.m; sourceTree = "<group>"; };
 		7A10E5CF1478AB8F0082341A /* EmailCorrect.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EmailCorrect.h; sourceTree = "<group>"; };
 		7A10E5D01478AB8F0082341A /* EmailCorrect.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EmailCorrect.m; sourceTree = "<group>"; };
+		7AB23B7F15D33E96007E3A65 /* EmailCorrect+Private.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "EmailCorrect+Private.h"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -92,6 +94,7 @@
 				7A10E5A81478AB6D0082341A /* Supporting Files */,
 				7A10E5CF1478AB8F0082341A /* EmailCorrect.h */,
 				7A10E5D01478AB8F0082341A /* EmailCorrect.m */,
+				7AB23B7F15D33E96007E3A65 /* EmailCorrect+Private.h */,
 			);
 			path = EmailCorrect;
 			sourceTree = "<group>";
@@ -143,6 +146,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				7A10E5D11478AB8F0082341A /* EmailCorrect.h in Headers */,
+				7AB23B8015D33E96007E3A65 /* EmailCorrect+Private.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

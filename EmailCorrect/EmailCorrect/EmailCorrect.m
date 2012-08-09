@@ -7,6 +7,7 @@
 //
 
 #import "EmailCorrect.h"
+#import "EmailCorrect+Private.h"
 
 @interface EmailCorrect ()
 @property (nonatomic, retain) NSSet *topLevelDomains;
@@ -14,10 +15,7 @@
 
 @implementation EmailCorrect
 
-@synthesize topLevelDomains;
-
-#pragma mark -
-#pragma mark Set up
+#pragma mark - Set up
 
 - (id)init
 {
@@ -75,8 +73,7 @@
     return self;
 }
 
-#pragma mark -
-#pragma mark Helpers
+#pragma mark - Helpers
 
 - (BOOL)isValidEmail:(NSString *)emailAddress;
 {
@@ -94,24 +91,27 @@
 
 - (BOOL)isValidDomain:(NSString *)topLevelDomain
 {
-    return [topLevelDomains containsObject:[topLevelDomain lowercaseString]];
+    return [_topLevelDomains containsObject:[topLevelDomain lowercaseString]];
 }
 
 - (NSString *)correctionForDomain:(NSString *)invalidDomain
 {
-    if ([self isValidDomain:invalidDomain])
-        return nil;
     NSString *correction = nil;
-    int minimumDistance = [invalidDomain length];
-    for (NSString *validDomain in [topLevelDomains allObjects])
+
+    if ([self isValidDomain:invalidDomain] == NO)
     {
-        int distance = [self similarityBetween:validDomain and:invalidDomain];
-        if (distance < minimumDistance)
+        int minimumDistance = [invalidDomain length];
+        for (NSString *validDomain in [_topLevelDomains allObjects])
         {
-            correction = validDomain;
-            minimumDistance = distance;
+            int distance = [self similarityBetween:validDomain and:invalidDomain];
+            if (distance < minimumDistance)
+            {
+                correction = validDomain;
+                minimumDistance = distance;
+            }
         }
     }
+    
     return correction;
 }
 
@@ -150,7 +150,9 @@
             NSString *firstLetter = [firstDomain substringWithRange:NSMakeRange(i - 1, 1)];
             NSString *secondLetter = [secondDomain substringWithRange:NSMakeRange(j - 1, 1)];
             if ([firstLetter isEqualToString:secondLetter])
+            {
                 distances[i][j] = distances[i - 1][j - 1];
+            }
             else
             {
                 distances[i][j] = MIN(MIN(distances[i - 1][j] + 1,
@@ -189,12 +191,11 @@
     }
 }
 
-#pragma mark -
-#pragma mark Clean up
+#pragma mark - Clean up
 
 - (void)dealloc
 {
-    self.topLevelDomains = nil;
+    [_topLevelDomains release];
     [super dealloc];
 }
 

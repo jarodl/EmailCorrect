@@ -14,15 +14,30 @@ typedef void (^EmailInvalidHandler)(NSString *email);
 
 @interface EmailCorrect : NSObject
 
+/**
+ * @discussion Tests the entire email for validity
+ */
 - (BOOL)isValidEmail:(NSString *)emailAddress;
+
+/**
+ * @discussion Tests a domain for validity
+ */
 - (BOOL)isValidDomain:(NSString *)topLevelDomain;
-// Offers a suggestion for a possibly mis-spelled domain
-// returns nil if the domain is valid
+
+/**
+ * @discussion Offers a suggestion for a possibly mis-spelled domain
+ *             returns nil if the domain is valid
+ */
 - (NSString *)correctionForDomain:(NSString *)invalidDomain;
+
+/**
+ * @discussion Parses out the TLD for the given email
+ */
 - (NSString *)topLevelDomainFor:(NSString *)email;
-// Returns the levenshtein distance between the domains
-// The lower the number, the closer the match
-- (int)similarityBetween:(NSString *)firstDomain and:(NSString *)secondDomain;
+
+/**
+ * @discussion Attempts to validate the email and calls the respective handler
+ */
 - (void)validateEmailAddress:(NSString *)emailAddress
                 validHandler:(EmailValidHandler)validHandler
               invalidHandler:(EmailInvalidHandler)invalidHandler
