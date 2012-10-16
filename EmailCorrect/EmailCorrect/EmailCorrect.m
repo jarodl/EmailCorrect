@@ -11,6 +11,7 @@
 
 @interface EmailCorrect ()
 @property (nonatomic, retain) NSSet *topLevelDomains;
+@property (nonatomic, retain) NSSet *commonEmailDomains;
 @end
 
 @implementation EmailCorrect
@@ -67,7 +68,19 @@
                                 @"uk", @"us", @"uy", @"uz", @"va", @"vc",
                                 @"ve", @"vg", @"vi", @"vn", @"vu", @"wf",
                                 @"ws", @"ye", @"yt", @"za", @"zm", @"zw",
+                                @"xxx",
                                 nil];
+        self.commonEmailDomains = [NSSet setWithObjects:
+                                   @"yahoo.com",
+                                   @"msn.com",
+                                   @"comcast.net",
+                                   @"verizon.net",
+                                   @"earthlink.net",
+                                   @"icloud.com",
+                                   @"gmail.com",
+                                   @"aol.com",
+                                   @"hotmail.com",
+                                   nil];
     }
     
     return self;
@@ -196,6 +209,7 @@
 - (void)dealloc
 {
     [_topLevelDomains release];
+    [_commonEmailDomains release];
     [super dealloc];
 }
 

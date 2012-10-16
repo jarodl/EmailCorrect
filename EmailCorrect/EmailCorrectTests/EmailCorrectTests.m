@@ -53,6 +53,8 @@ while( (expr) == NO ) [[NSRunLoop currentRunLoop] runUntilDate:[NSDate dateWithT
                  @"Valid top level domain was marked as invalid");
     STAssertFalse([_emailCorrector isValidDomain:@"con"],
                   @"Invalid top level domain was marked as valid");
+    STAssertTrue([_emailCorrector isValidDomain:@"xxx"],
+                  @"Valid top level domain was marked as invalid");
 }
 
 - (void)testSimilarityBetweenDomains

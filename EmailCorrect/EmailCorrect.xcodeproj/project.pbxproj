@@ -198,7 +198,7 @@
 		7A10E5991478AB6D0082341A /* Project object */ = {
 			isa = PBXProject;
 			attributes = {
-				LastUpgradeCheck = 0440;
+				LastUpgradeCheck = 0450;
 			};
 			buildConfigurationList = 7A10E59C1478AB6D0082341A /* Build configuration list for PBXProject "EmailCorrect" */;
 			compatibilityVersion = "Xcode 3.2";
