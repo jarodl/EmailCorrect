@@ -113,7 +113,7 @@
 
     if ([self isValidDomain:invalidDomain] == NO)
     {
-        int minimumDistance = [invalidDomain length];
+        int minimumDistance = HUGE_VAL;
         for (NSString *validDomain in [_topLevelDomains allObjects])
         {
             int distance = [self similarityBetween:validDomain and:invalidDomain];
