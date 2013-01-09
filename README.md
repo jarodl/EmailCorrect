@@ -20,10 +20,10 @@ Intelligently validate email addresses.
 		[alert show];
     };
 	EmailValidHandler validHandler = ^(NSString *email) {
-		NSLog([NSString stringWithFormat:@"Success! Email address '%@' is valid", email);
+		NSLog(@"%@", [NSString stringWithFormat:@"Success! Email address '%@' is valid", email]);
     };
 	EmailInvalidHandler invalidHandler = ^(NSString *invalidEmail) {
-		NSLog([NSString stringWithFormat:@"Failed! Email address '%@' is invalid", invalidEmail);
+		NSLog(@"%@", [NSString stringWithFormat:@"Failed! Email address '%@' is invalid", invalidEmail]);
 	};
 	NSString *needsCorrection = @"john@domain.con";
 	// Shows an alert view suggesting the domain be changed to '.com'
